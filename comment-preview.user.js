@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Comment Preview
+// @name         SE Comment Preview
 // @namespace    http://math.stackexchange.com/users/5531/
 // @version      0.1
 // @description  A userscript for Stack Exchange sites that adds a preview pane beneath comment input boxes
@@ -17,11 +17,16 @@
 
 function addPreview(jNode) { //jNode is the comment entry text box
     var textAreaParentForm = jNode.parent().parent().parent().parent().parent();
-    var itemidNum = textAreaParentForm[0].id.replace( /^\D+/g, ''); //SE id number of question/answer being commented on
-    var newdivid = "comment-preview-" + itemidNum;
+    var commentidNum = textAreaParentForm.parent().parent()[0].id.replace( /^\D+/g, ''); //SE id number of comment being edited, blank if adding new comment
+    
+    if (commentidNum.length == 0) {  //a new comment is being added
+        commentidNum = textAreaParentForm[0].id.replace( /^\D+/g, ''); //SE id number of question/answer being commented on
+    }
+    
+    var newdivid = "comment-preview-" + commentidNum;
 
     setTimeout(function() {
-        var previewPane = '<div><hr style="margin-bottom:6px;margin-top:10px"><div id="' + newdivid + '">' + (jNode.val().length > 0 ? jNode.val() : '<span style="color: #999999">(comment preview)</span>') + '</div style="margin-top:12px"><hr></div>';
+        var previewPane = '<div style="display: none;"><hr style="margin-bottom:6px;margin-top:10px"><div id="' + newdivid + '">' + (jNode.val().length > 0 ? jNode.val() : '<span style="color: #999999">(comment preview)</span>') + '</div style="margin-top:12px"><hr></div>';
         
         textAreaParentForm.children().last().after(previewPane);
         
@@ -29,6 +34,8 @@ function addPreview(jNode) { //jNode is the comment entry text box
         jNode.bind('input propertychange', function() {
             $('#' + newdivid).html( $(this).val() );
         });
+
+        textAreaParentForm.children().last().slideDown('fast');
         
         //Remove the preview pane if the comment is submitted or editing is cancelled.
         textAreaParentForm.find('[value="Add Comment"]').on('click', function() {
