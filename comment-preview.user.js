@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SE Comment Preview
 // @namespace    http://math.stackexchange.com/users/5531/
-// @version      0.1
+// @version      0.2
 // @description  A userscript for Stack Exchange sites that adds a preview pane beneath comment input boxes
 // @match        *://*.stackexchange.com/*
 // @match        *://*.stackoverflow.com/*
@@ -10,41 +10,172 @@
 // @match        *://*.askubuntu.com/*
 // @match        *://*.stackapps.com/*
 // @match        *://*.mathoverflow.net/*
-// @require      https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js
+// @require      https://rawgit.com/szego/marked/disable-elements/lib/marked.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @grant        GM_addStyle
 // ==/UserScript==
 
-function addPreview(jNode) { //jNode is the comment entry text box
+marked.setOptions({
+    gfm: false,
+    pedantic: false,
+    sanitize: false,  //IMPORTANT, because we do MathJax before markdown,
+                      //           however we do escaping in 'CreatePreview'.
+    smartLists: true,
+    smartypants: false,
+
+    disabledElements: [ 'newline',
+                        'hr',
+                        'heading',
+                        'lheading',
+                        'blockquote',
+                        'list',
+                        'html',
+                        'def',
+                        'paragraph',
+                        'bullet',
+                        'item',
+                        'br' ]
+});
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * The following is based on code written by Sergey Kirgizov for
+ * a markdown+mathjax live preview example. It has been modified
+ * to use jQuery.
+ *
+ * See: https://github.com/kerzol/markdown-mathjax
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/**
+ * Preview object, to be associated with each textarea + preview div.
+ *  
+ * @param {jQuery} inputBox   - A jQuery object pointing to the
+ *                               textarea element from which to create
+ *                               the live preview.
+ * @param {jQuery} previewBox - A jQuery object pointing to the div
+ *                               element which will contain the live
+ *                               preview.
+ */
+function Preview(inputBox, previewBox) {
+    this.delay = 300;         // delay after keystroke before updating
+
+    this.preview = previewBox;
+    this.textarea = inputBox;
+
+    this.timeout = null;     // store setTimout id
+    this.mjRunning = false;  // true when MathJax is processing
+    this.oldText = null;     // used to check if an update is needed  
+}
+
+//
+//  This gets called when a key is pressed in the textarea.
+//  We check if there is already a pending update and clear it if so.
+//  Then set up an update to occur after a small delay (so if more keys
+//    are pressed, the update won't occur until after there has been 
+//    a pause in the typing).
+//  The callback function is set up below, after the Preview object is set up.
+//
+Preview.prototype.Update = function () {
+    if (this.timeout) {clearTimeout(this.timeout)}
+    this.timeout = setTimeout(this.callback,this.delay);
+};
+
+//
+//  Creates the preview and runs MathJax on it.
+//  If MathJax is already trying to render the code, return
+//  If the text hasn't changed, return
+//  Otherwise, indicate that MathJax is running, and start the
+//    typesetting.  After it is done, call PreviewDone.
+//  
+Preview.prototype.CreatePreview = function () {
+    this.timeout = null;
+    if (this.mjRunning) return;
+    var text = this.textarea.val();
+    if (text === this.oldtext) return;
+    text = this.Escape(text);  //Escape tags before doing stuff
+    this.preview.html(text);
+    this.oldtext = text;
+    this.mjRunning = true;
+    MathJax.Hub.Queue(
+        ["Typeset",MathJax.Hub,this.preview[0].id],
+        ["PreviewDone",this],
+        ["resetEquationNumbers", MathJax.InputJax.TeX]
+    );
+};
+
+//
+//  Indicate that MathJax is no longer running,
+//  do markdown over MathJax's result, 
+//  and swap the buffers to show the results.
+//
+Preview.prototype.PreviewDone = function () {
+    this.mjRunning = false;
+    text = this.preview.html();
+    // replace occurrences of &gt; at the beginning of a new line
+    // with > again, so Markdown blockquotes are handled correctly
+    text = text.replace(/^&gt;/mg, '>');
+    this.preview.html(marked(text));
+};
+
+Preview.prototype.Escape = function (html, encode) {
+    return html
+        .replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+};
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * END code based on Sergey Kirgizov's markdown+mathjax example.
+ *
+ * See: https://github.com/kerzol/markdown-mathjax
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+function addPreview(jNode) {  //jNode is the comment entry text box
     var textAreaParentForm = jNode.parent().parent().parent().parent().parent();
-    var commentidNum = textAreaParentForm.parent().parent()[0].id.replace( /^\D+/g, ''); //SE id number of comment being edited, blank if adding new comment
-    
+    var commentidNum = textAreaParentForm.parent().parent()[0].id.replace( /^\D+/g, '');  //SE id number of comment being edited,
+                                                                                          // blank if adding new comment
     if (commentidNum.length == 0) {  //a new comment is being added
-        commentidNum = textAreaParentForm[0].id.replace( /^\D+/g, ''); //SE id number of question/answer being commented on
+        commentidNum = textAreaParentForm[0].id.replace( /^\D+/g, '');  //SE id number of question/answer being commented on
     }
     
     var newdivid = "comment-preview-" + commentidNum;
 
     setTimeout(function() {
-        var previewPane = '<div style="display: none;"><hr style="margin-bottom:6px;margin-top:10px"><div id="' + newdivid + '">' + (jNode.val().length > 0 ? jNode.val() : '<span style="color: #999999">(comment preview)</span>') + '</div style="margin-top:12px"><hr></div>';
-        
+        var previewPane = '<div style="display: none;"><hr style="margin-bottom:16px;margin-top:10px;"> \
+                           <div id="' + newdivid + '"><span style="color: #999999">(comment preview)    \
+                           </span></div><hr style="margin-top:17px;"></div>';
+
         textAreaParentForm.children().last().after(previewPane);
+
+        var previewDiv = $('#' + newdivid);
+        var prev = new Preview(jNode, previewDiv);
+        prev.callback = MathJax.Callback(["CreatePreview",prev]);
+        prev.callback.autoReset = true;  // make sure it can run more than once
         
-        //Tell the preview pane to update with whatever is in the comment entry text box whenever it changes
         jNode.bind('input propertychange', function() {
-            $('#' + newdivid).html( $(this).val() );
+            prev.Update();
         });
 
+        if(jNode.val().length > 0) {
+            prev.Update();
+        }
+
+        //reveal the hidden preview pane
         textAreaParentForm.children().last().slideDown('fast');
         
-        //Remove the preview pane if the comment is submitted or editing is cancelled.
+        //remove the preview pane if the comment is submitted or editing is cancelled
         textAreaParentForm.find('[value="Add Comment"]').on('click', function() {
-            if(jNode.val().length > 14) $('#' + newdivid).parent().remove();
+            if(jNode.val().length > 14) previewDiv.parent().remove();
         });
         textAreaParentForm.find('[class="edit-comment-cancel"]').on('click', function() {
-            $('#' + newdivid).parent().remove();
+            previewDiv.parent().remove();
         });
-    }, 1000)
+    }, 500)
 }
 
 waitForKeyElements('[name="comment"]', addPreview);
