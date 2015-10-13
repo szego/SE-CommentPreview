@@ -15,11 +15,21 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-marked.setOptions({
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * The following is based on code written by Sergey Kirgizov for
+ * a markdown+mathjax live preview example. It has been modified
+ * to use jQuery and a custom fork of Marked.
+ *
+ * See: https://github.com/kerzol/markdown-mathjax
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+ marked.setOptions({
     gfm: false,
     pedantic: false,
-    sanitize: false,  //IMPORTANT, because we do MathJax before markdown,
-                      //           however we do escaping in 'CreatePreview'.
+    sanitize: false,  // IMPORTANT, because we do MathJax before markdown,
+                      //  however we do escaping in 'CreatePreview'.
     smartLists: true,
     smartypants: false,
 
@@ -37,19 +47,9 @@ marked.setOptions({
                         'br' ]
 });
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * The following is based on code written by Sergey Kirgizov for
- * a markdown+mathjax live preview example. It has been modified
- * to use jQuery.
- *
- * See: https://github.com/kerzol/markdown-mathjax
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
 /**
  * Preview object, to be associated with each textarea + preview div.
- *  
+ *
  * @param {jQuery} inputBox   - A jQuery object pointing to the
  *                               textarea element from which to create
  *                               the live preview.
@@ -137,10 +137,10 @@ Preview.prototype.Escape = function (html, encode) {
 
 function addPreview(jNode) {  //jNode is the comment entry text box
     var textAreaParentForm = jNode.parent().parent().parent().parent().parent();
-    var commentidNum = textAreaParentForm.parent().parent()[0].id.replace( /^\D+/g, '');  //SE id number of comment being edited,
-                                                                                          // blank if adding new comment
+    var commentidNum = textAreaParentForm.parent().parent()[0].id.replace( /^\D+/g, '');  // SE id number of comment being edited,
+                                                                                          //  blank if adding new comment
     if (commentidNum.length == 0) {  //a new comment is being added
-        commentidNum = textAreaParentForm[0].id.replace( /^\D+/g, '');  //SE id number of question/answer being commented on
+        commentidNum = textAreaParentForm[0].id.replace( /^\D+/g, '');  // SE id number of question/answer being commented on
     }
     
     var newdivid = "comment-preview-" + commentidNum;
@@ -157,7 +157,7 @@ function addPreview(jNode) {  //jNode is the comment entry text box
         prev.callback = MathJax.Callback(["CreatePreview",prev]);
         prev.callback.autoReset = true;  // make sure it can run more than once
         
-        jNode.bind('input propertychange', function() {
+        jNode.on('input propertychange', function() {
             prev.Update();
         });
 
@@ -165,10 +165,13 @@ function addPreview(jNode) {  //jNode is the comment entry text box
             prev.Update();
         }
 
-        //reveal the hidden preview pane
+        // reveal the hidden preview pane
         textAreaParentForm.children().last().slideDown('fast');
         
-        //remove the preview pane if the comment is submitted or editing is cancelled
+        // remove the preview pane if the comment is submitted or editing is cancelled
+        jNode.on('keyup', function(event) {
+            if(event.which == 13 && jNode.val().length > 14) previewDiv.parent().remove();  // comment was submitted via return key
+        });
         textAreaParentForm.find('[value="Add Comment"]').on('click', function() {
             if(jNode.val().length > 14) previewDiv.parent().remove();
         });
@@ -179,3 +182,27 @@ function addPreview(jNode) {  //jNode is the comment entry text box
 }
 
 waitForKeyElements('[name="comment"]', addPreview);
+
+// When a new comment on a question/answer is being composed for the
+//  first time on a page the waitForKeyElements() listener above adds
+//  a preview pane.
+//
+//  After the comment is submitted the textarea isn't deleted---
+//  instead, one of its ancestors is hidden. If the user starts
+//  composing another new comment on the same question/answer the
+//  ancestor is unhidden, so waitForKeyElements() doesn't notice.
+//
+//  Below we set up the listeners for these unhide events.
+
+var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutationRecord) {
+        if(mutationRecord.oldValue === 'display: none;') {
+            addPreview( $(mutationRecord.target).find('textarea') );
+        }
+    });
+});
+
+var targets = $('[id^="add-comment-"]');
+for(i = 0; i < targets.length; i++) {
+    observer.observe(targets.eq(i)[0], { attributes : true, attributeOldValue : true, target : true, attributeFilter : ['style'] });
+}
