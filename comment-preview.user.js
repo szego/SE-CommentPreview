@@ -10,6 +10,7 @@
 // @match        *://*.askubuntu.com/*
 // @match        *://*.stackapps.com/*
 // @match        *://*.mathoverflow.net/*
+// @require      https://rawgit.com/szego/SE-CommentPreview/master/MJPDEditing.js
 // @require      https://rawgit.com/szego/pagedown/master/Markdown.Converter.js
 // @require      https://pagedown.googlecode.com/hg/Markdown.Editor.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
@@ -36,8 +37,10 @@ function addPreview(jNode) {  //jNode is the comment entry text box
 
         jNode.attr('id', 'wmd-input-comment-' + commentidNum);
 
-        var editor = new Markdown.Editor(mdconverter, '-comment-' + commentidNum);
-        editor.run();
+        var mdeditor = new Markdown.Editor(mdconverter, '-comment-' + commentidNum);
+        mdeditor.run();
+
+        MJPDEditing.prepareWmdForMathJax(mdeditor, '-comment-' + commentidNum, [["$", "$"], ["\\\\(","\\\\)"]]);
 
         var previewDiv = $('#wmd-preview-comment-' + commentidNum);
 
