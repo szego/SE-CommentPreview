@@ -10,7 +10,7 @@
 // @match        *://*.askubuntu.com/*
 // @match        *://*.stackapps.com/*
 // @match        *://*.mathoverflow.net/*
-// @require      https://rawgit.com/szego/SE-CommentPreview/master/MJPDEditing.js
+// @require      https://rawgit.com/szego/SE-CommentPreview/dev/MJPDEditing.js
 // @require      https://rawgit.com/szego/pagedown/master/Markdown.Converter.js
 // @require      https://pagedown.googlecode.com/hg/Markdown.Editor.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
@@ -33,35 +33,25 @@ function addPreview(jNode) {  //jNode is the comment entry text box
                                <hr style="margin-top:17px;">                                                           \
                            </div>';
 
+        // insert the preview pane into the page
         textAreaParentForm.children().last().after(previewPane);
 
+        // give the comment entry text box an id starting with "wmd-input"
+        //  so that will be recognized by Pagedown
         jNode.attr('id', 'wmd-input-comment-' + commentidNum);
 
+        // create a new Markdown.Editor associated with jNode and the preview pane
+        var mdconverter = Markdown.getSanitizingConverter();
         var mdeditor = new Markdown.Editor(mdconverter, '-comment-' + commentidNum);
         mdeditor.run();
 
+        // coordinate mdeditor with MathJax rendering via MJPDEditing
         MJPDEditing.prepareWmdForMathJax(mdeditor, '-comment-' + commentidNum, [["$", "$"], ["\\\\(","\\\\)"]]);
 
-        var previewDiv = $('#wmd-preview-comment-' + commentidNum);
-
-        /*
-
-        var prev = new Preview(jNode, previewDiv);
-        prev.callback = MathJax.Callback(["CreatePreview",prev]);
-        prev.callback.autoReset = true;  // make sure it can run more than once
-        
-        jNode.on('input propertychange', function() {
-            prev.Update();
-        });
-
-        if(jNode.val().length > 0) {
-            prev.Update();
-        }
-
-        */
-
-        // reveal the hidden preview pane
+        // reveal the preview pane
         textAreaParentForm.children().last().slideDown('fast');
+
+        var previewDiv = $('#wmd-preview-comment-' + commentidNum);
         
         // remove the preview pane if the comment is submitted or editing is cancelled
         jNode.on('keyup', function(event) {
@@ -82,8 +72,6 @@ function addPreview(jNode) {  //jNode is the comment entry text box
         });
     }, 500)
 }
-
-var mdconverter = Markdown.getSanitizingConverter();
 
 waitForKeyElements('[name="comment"]', addPreview);
 
