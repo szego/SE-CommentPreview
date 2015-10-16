@@ -26,11 +26,11 @@ function addPreview(jNode) {  //jNode is the comment entry text box
     }
     
     setTimeout(function() {
-        var previewPane = '<div style="display: none;">                                                                \
-                               <hr style="margin-bottom:16px;margin-top:10px;">                                        \
-                               <div id="wmd-button-bar-comment-' + commentidNum + '" style="display: none;"></div>     \
-                               <div id="wmd-preview-comment-' + commentidNum + '" class"wmd-panel wmd-preview"></div>  \
-                               <hr style="margin-top:17px;">                                                           \
+        var previewPane = '<div style="display: none;">                                                                                        \
+                               <hr style="margin-bottom:16px;margin-top:10px;background-color:#ccc;border-bottom:1px dotted #fff;height:0px">  \
+                               <div id="wmd-button-bar-comment-' + commentidNum + '" style="display: none;"></div>                             \
+                               <div id="wmd-preview-comment-' + commentidNum + '" class"wmd-panel wmd-preview"></div>                          \
+                               <hr style="margin-top:17px;background-color:#ccc;border-bottom:1px dotted #fff;height:0px">                     \
                            </div>';
 
         // insert the preview pane into the page
