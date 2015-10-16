@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SE Comment Preview
 // @namespace    http://math.stackexchange.com/users/5531/
-// @version      0.2
+// @version      0.3
 // @description  A userscript for Stack Exchange sites that adds a preview pane beneath comment input boxes
 // @match        *://*.stackexchange.com/*
 // @match        *://*.stackoverflow.com/*
@@ -12,7 +12,7 @@
 // @match        *://*.mathoverflow.net/*
 // @exclude		 *://*.codereview.stackexchange.com/*
 // @exclude		 *://*.electronics.stackexchange.com/*
-// @require      https://rawgit.com/szego/SE-CommentPreview/experimental/MJPDEditing.js
+// @require      https://rawgit.com/szego/SE-CommentPreview/master/MJPDEditing.js
 // @require      https://rawgit.com/szego/pagedown/master/Markdown.Converter.js
 // @require      https://pagedown.googlecode.com/hg/Markdown.Editor.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
@@ -42,7 +42,7 @@ function addPreview(jNode) {  //jNode is the comment entry text box
         //  so that will be recognized by Pagedown
         jNode.attr('id', 'wmd-input-comment-' + commentidNum);
 
-        // create a new Markdown.Editor associated with jNode and the preview pane
+        // create a new Markdown.Converter and Markdown.Editor associated with jNode and the preview pane
         var mdconverter = Markdown.getSanitizingConverter();
         var mdeditor = new Markdown.Editor(mdconverter, '-comment-' + commentidNum);
         mdeditor.run();
