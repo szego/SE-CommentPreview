@@ -59,17 +59,32 @@ function addPreview(jNode) {  //jNode is the comment entry text box
             if(event.which == 13 && jNode.val().length > 14) {  // comment was submitted via return key
                 previewDiv.parent().remove();
                 jNode.attr('id', '');
+
+                // remove all the hooks between the converter, editor, and MathJax
+                mdconverter.hooks.addNoop('preConversion');
+                mdconverter.hooks.addNoop('postConversion');
+                mdeditor.hooks.addNoop("onPreviewRefresh");
             }
         });
         textAreaParentForm.find('[value="Add Comment"]').on('click', function() {
             if(jNode.val().length > 14) {
                 previewDiv.parent().remove();
                 jNode.attr('id', '');
+
+                // remove all the hooks between the converter, editor, and MathJax
+                mdconverter.hooks.addNoop('preConversion');
+                mdconverter.hooks.addNoop('postConversion');
+                mdeditor.hooks.addNoop("onPreviewRefresh");
             }
         });
         textAreaParentForm.find('[class="edit-comment-cancel"]').on('click', function() {
             previewDiv.parent().remove();
             jNode.attr('id', '');
+
+            // remove all the hooks between the converter, editor, and MathJax
+            mdconverter.hooks.addNoop('preConversion');
+            mdconverter.hooks.addNoop('postConversion');
+            mdeditor.hooks.addNoop("onPreviewRefresh");
         });
     }, 500)
 }
