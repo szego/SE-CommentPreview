@@ -45,11 +45,12 @@ function addPreview(jNode) {  // jNode is the comment entry text box
         // create a new Markdown.Converter and Markdown.Editor associated with jNode and the preview pane
         var mdconverter = Markdown.getSanitizingConverter();
         var mdeditor = new Markdown.Editor(mdconverter, '-comment-' + commentidNum);
-        mdeditor.run();
 
         // coordinate mdeditor with MathJax rendering via MJPDEditing
         var mjpd = new MJPD();
         mjpd.Editing.prepareWmdForMathJax(mdeditor, '-comment-' + commentidNum, [["$", "$"], ["\\\\(","\\\\)"]]);
+
+        mdeditor.run();
 
         // reveal the preview pane
         textAreaParentForm.children().last().slideDown('fast');
