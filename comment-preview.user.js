@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SE Comment Preview
 // @namespace    http://math.stackexchange.com/users/5531/
-// @version      0.3
+// @version      0.3.1
 // @description  A userscript for Stack Exchange sites that adds a preview pane beneath comment input boxes
 // @match        *://*.stackexchange.com/*
 // @match        *://*.stackoverflow.com/*
