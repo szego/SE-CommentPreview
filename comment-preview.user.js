@@ -10,8 +10,8 @@
 // @match        *://*.askubuntu.com/*
 // @match        *://*.stackapps.com/*
 // @match        *://*.mathoverflow.net/*
-// @exclude		 *://*.codereview.stackexchange.com/*
-// @exclude		 *://*.electronics.stackexchange.com/*
+// @exclude      *://*.codereview.stackexchange.com/*
+// @exclude      *://*.electronics.stackexchange.com/*
 // @require      https://rawgit.com/szego/SE-CommentPreview/master/MJPDEditing.js
 // @require      https://rawgit.com/szego/pagedown/master/Markdown.Converter.js
 // @require      https://pagedown.googlecode.com/hg/Markdown.Editor.js
@@ -19,7 +19,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-function addPreview(jNode) {  //jNode is the comment entry text box
+function addPreview(jNode) {  // jNode is the comment entry text box
     var textAreaParentForm = jNode.parent().parent().parent().parent().parent();
     var commentidNum = textAreaParentForm.parent().parent()[0].id.replace( /^\D+/g, '');  // SE id number of comment being edited,
                                                                                           //  blank if adding new comment
@@ -28,11 +28,11 @@ function addPreview(jNode) {  //jNode is the comment entry text box
     }
     
     setTimeout(function() {
-        var previewPane = '<div style="display: none;">                                                                                        \
-                               <hr style="margin-bottom:16px;margin-top:10px;background-color:#ccc;border-bottom:1px dotted #fff;height:0px">  \
-                               <div id="wmd-button-bar-comment-' + commentidNum + '" style="display: none;"></div>                             \
-                               <div id="wmd-preview-comment-' + commentidNum + '" class"wmd-panel wmd-preview"></div>                          \
-                               <hr style="margin-top:17px;background-color:#ccc;border-bottom:1px dotted #fff;height:0px">                     \
+        var previewPane = '<div style="display: none;">                                                                                           \
+                               <hr style="margin-bottom:16px;margin-top:10px;background-color:#ccc;border-bottom:1px dotted #fefefe;height:0px">  \
+                               <div id="wmd-button-bar-comment-' + commentidNum + '" style="display: none;"></div>                                \
+                               <div id="wmd-preview-comment-' + commentidNum + '" class"wmd-panel wmd-preview"></div>                             \
+                               <hr style="margin-top:17px;background-color:#ccc;border-bottom:1px dotted #fefefe;height:0px">                     \
                            </div>';
 
         // insert the preview pane into the page
