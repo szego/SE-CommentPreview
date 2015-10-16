@@ -10,6 +10,8 @@
 // @match        *://*.askubuntu.com/*
 // @match        *://*.stackapps.com/*
 // @match        *://*.mathoverflow.net/*
+// @exclude		 *://*.codereview.stackexchange.com/*
+// @exclude		 *://*.electronics.stackexchange.com/*
 // @require      https://rawgit.com/szego/SE-CommentPreview/experimental/MJPDEditing.js
 // @require      https://rawgit.com/szego/pagedown/master/Markdown.Converter.js
 // @require      https://pagedown.googlecode.com/hg/Markdown.Editor.js
