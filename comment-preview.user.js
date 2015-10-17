@@ -10,8 +10,6 @@
 // @match        *://*.askubuntu.com/*
 // @match        *://*.stackapps.com/*
 // @match        *://*.mathoverflow.net/*
-// @exclude      *://*.codereview.stackexchange.com/*
-// @exclude      *://*.electronics.stackexchange.com/*
 // @require      https://szego.github.io/SE-CommentPreview/MJPDEditing.mini.js
 // @require      https://szego.github.io/pagedown/Markdown.Converter.mini.js
 // @require      https://pagedown.googlecode.com/hg/Markdown.Editor.js
@@ -48,8 +46,11 @@ function addPreview(jNode) {  // jNode is the comment entry text box
 
         // coordinate mdeditor with MathJax rendering via MJPDEditing
         var mjpd = new MJPD();
-        mjpd.Editing.prepareWmdForMathJax(mdeditor, '-comment-' + commentidNum, [["$", "$"], ["\\\\(","\\\\)"]]);
 
+        if (window.location.pathname.indexOf('electronics.stackexchange') < 0 && window.location.pathname.indexOf('codereview.stackexchange') < 0)
+            mjpd.Editing.prepareWmdForMathJax(mdeditor, postfix, [["$", "$"]]);
+        else
+            mjpd.Editing.prepareWmdForMathJax(mdeditor, postfix, [["\\$", "\\$"]]);
         mdeditor.run();
 
         // reveal the preview pane
