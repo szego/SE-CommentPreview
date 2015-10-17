@@ -1,4 +1,4 @@
-# SE Comment Preview v0.3.2
+## SE Comment Preview v0.3.2
 
 An attempt to add real-time previewing when composing comments on Stack Exchange sites.
 
