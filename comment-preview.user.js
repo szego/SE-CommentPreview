@@ -12,8 +12,8 @@
 // @match        *://*.mathoverflow.net/*
 // @exclude      *://*.codereview.stackexchange.com/*
 // @exclude      *://*.electronics.stackexchange.com/*
-// @require      https://szego.github.io/SE-CommentPreview/MJPDEditing.js
-// @require      https://szego.github.io/pagedown/Markdown.Converter.js
+// @require      https://rawgit.com/szego/SE-CommentPreview/dev/MJPDEditing.mini.js
+// @require      https://szego.github.io/pagedown/Markdown.Converter.mini.js
 // @require      https://pagedown.googlecode.com/hg/Markdown.Editor.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @grant        GM_addStyle
