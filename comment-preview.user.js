@@ -11,7 +11,7 @@
 // @match        *://*.stackapps.com/*
 // @match        *://*.mathoverflow.net/*
 // @require      https://cdn.sstatic.net/Js/wmd.en.js
-// @require      https://szego.github.io/SE-CommentPreview/MJPDEditing.mini.js
+// @require      https://rawgit.com/szego/SE-CommentPreview/dev/MJPDEditing.mini.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @grant        GM_addStyle
 // ==/UserScript==
