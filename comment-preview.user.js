@@ -61,6 +61,7 @@ function addPreview(jNode) {  // jNode is the comment entry text box
         else
             mjpd.Editing.prepareWmdForMathJax(mdeditor, postfix, [["\\$", "\\$"]]);
         mdeditor.run();
+        mdeditor.refreshPreview();
 
         // reveal the preview pane
         textAreaParentForm.children().last().slideDown('fast');
