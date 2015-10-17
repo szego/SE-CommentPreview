@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SE Comment Preview
 // @namespace    http://math.stackexchange.com/users/5531/
-// @version      0.3.1
+// @version      0.3.2
 // @description  A userscript for Stack Exchange sites that adds a preview pane beneath comment input boxes
 // @match        *://*.stackexchange.com/*
 // @match        *://*.stackoverflow.com/*
@@ -12,8 +12,8 @@
 // @match        *://*.mathoverflow.net/*
 // @exclude      *://*.codereview.stackexchange.com/*
 // @exclude      *://*.electronics.stackexchange.com/*
-// @require      https://szego.github.io/SE-CommentPreview/MJPDEditing.js
-// @require      https://szego.github.io/pagedown/Markdown.Converter.js
+// @require      https://szego.github.io/SE-CommentPreview/MJPDEditing.mini.js
+// @require      https://szego.github.io/pagedown/Markdown.Converter.mini.js
 // @require      https://pagedown.googlecode.com/hg/Markdown.Editor.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @grant        GM_addStyle
