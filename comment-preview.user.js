@@ -54,11 +54,11 @@
                         'br' ]
 });
 
-function processMarkdown(text) {
+function processMarkdown(text, delim) {
     var ready = false; // true after initial typeset is complete
     var pending = false; // true when MathJax has been requested
     var preview = null; // the preview container
-    var inline = "$"; // the inline math delimiter
+    var inline = delim; // the inline math delimiter
     var blocks, start, end, last, braces; // used in searching for math
     var math; // stores math until markdone is done
     var HUB = MathJax.Hub;
@@ -302,7 +302,7 @@ Preview.prototype.CreatePreview = function () {
     var text = this.textarea.val();
     if (text === this.oldtext) return;
     this.oldtext = text;
-    text = processMarkdown(text);
+    text = processMarkdown(text, inlineDelimiter);
     this.preview.html(text);
     this.mjRunning = true;
     MathJax.Hub.Queue(
@@ -341,9 +341,13 @@ function addPreview(jNode) {  //jNode is the comment entry text box
     var newdivid = "comment-preview-" + commentidNum;
 
     setTimeout(function() {
-        var previewPane = '<div style="display: none;"><hr style="margin-bottom:16px;margin-top:10px;"> \
-                           <div id="' + newdivid + '"><span style="color: #999999">(comment preview)    \
-                           </span></div><hr style="margin-top:17px;"></div>';
+        var previewPane = '<div style="display: none;">                                                                                           \
+                               <hr style="margin-bottom:16px;margin-top:10px;background-color:#ccc;border-bottom:1px dotted #fefefe;height:0px;"> \
+                               <div id="' + newdivid + '">                                                                                        \
+                                   <span style="color: #999999">(comment preview)</span>                                                          \
+                               </div>                                                                                                             \
+                               <hr style="margin-top:17px;background-color:#ccc;border-bottom:1px dotted #fefefe;height:0px;">                    \
+                           </div>';
 
         textAreaParentForm.children().last().after(previewPane);
 
@@ -375,6 +379,13 @@ function addPreview(jNode) {  //jNode is the comment entry text box
         });
     }, 500)
 }
+
+// set the inline math delimiter (site-specific)
+var inlineDelimiter;
+if (window.location.pathname.indexOf('electronics.stackexchange') < 0 && window.location.pathname.indexOf('codereview.stackexchange') < 0)
+    inlineDelimiter = '$';
+else
+    inlineDelimiter = '\\$';
 
 waitForKeyElements('[name="comment"]', addPreview);
 
