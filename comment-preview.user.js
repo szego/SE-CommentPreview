@@ -340,12 +340,12 @@ function addPreview(jNode) {  // jNode is the comment entry text box
     var newdivid = "comment-preview-" + commentidNum;
 
     setTimeout(function() {
-        var previewPane = '<div style="display: none;">                                                                                           \
-                               <hr style="margin-bottom:16px;margin-top:10px;background-color:#ccc;border-bottom:1px dotted #fefefe;height:0px;"> \
-                               <div id="' + newdivid + '">                                                                                        \
-                                   <span style="color: #999999">(comment preview)</span>                                                          \
-                               </div>                                                                                                             \
-                               <hr style="margin-top:17px;background-color:#ccc;border-bottom:1px dotted #fefefe;height:0px;">                    \
+        var previewPane = '<div style="display: none;">                                                                                                 \
+                               <hr style="margin-bottom:16px;margin-top:10px;background-color:rgba(0,0,0,0);border-bottom:1px dotted #ccc;height:0px;"> \
+                               <div id="' + newdivid + '">                                                                                              \
+                                   <span style="color: #999999">(comment preview)</span>                                                                \
+                               </div>                                                                                                                   \
+                               <hr style="margin-top:17px;background-color:rgba(0,0,0,0);border-bottom:1px dotted #ccc;height:0px;">                    \
                            </div>';
 
         textAreaParentForm.children().last().after(previewPane);
