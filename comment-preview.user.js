@@ -247,10 +247,13 @@ function processMarkdown(text, delim) {
         return text;
     }
 
-    text = removeMath(text); 
-    //remove and replace text with @@0@@ so that markdown does not do anything to math
-    text = marked(text);      //set marked to run
-    text = replaceMath(text); //rereplace math
+    // Remove math then neuter HTML tags since they do nothing in Stack Exchange
+    //  comments anyway, run marked, then put the math back into the text.
+    text = removeMath(text).replace(/&/g, "&amp;")  // use HTML entity for &
+                           .replace(/</g, "&lt;")   // use HTML entity for <
+                           .replace(/>/g, "&gt;");  // use HTML entity for >;
+    text = marked(text);
+    text = replaceMath(text);
     return text; 
 }
 
@@ -386,6 +389,67 @@ function addPreview(jNode) {  // jNode is the comment entry text box
     }, 500)
 }
 
+function addPreviewWithoutJax(jNode) {  // jNode is the comment entry text box
+    var textAreaParentForm = jNode.parent().parent().parent().parent().parent();
+    var commentidNum = textAreaParentForm.parent().parent()[0].id.replace( /^\D+/g, '');  // SE id number of comment being edited,
+                                                                                          //  blank if adding new comment
+    if (commentidNum.length == 0) {  // a new comment is being added
+        commentidNum = textAreaParentForm[0].id.replace( /^\D+/g, '');  // SE id number of question/answer being commented on
+    }
+    
+    var newdivid = "comment-preview-" + commentidNum;
+
+    setTimeout(function() {
+        var previewPane = '<div style="display: none;">                                                                                                 \
+                               <hr style="margin-bottom:16px;margin-top:10px;background-color:rgba(0,0,0,0);border-bottom:1px dotted #ccc;height:0px;"> \
+                               <div id="' + newdivid + '">                                                                                              \
+                                   <span style="color: #999999">(comment preview)</span>                                                                \
+                               </div>                                                                                                                   \
+                               <hr style="margin-top:17px;background-color:rgba(0,0,0,0);border-bottom:1px dotted #ccc;height:0px;">                    \
+                           </div>';
+
+        textAreaParentForm.children().last().after(previewPane);
+
+        var previewDiv = $('#' + newdivid);
+        
+        jNode.on('input propertychange', function() {
+            // Remove math then neuter HTML tags since they do nothing in Stack Exchange
+            //  comments anyway, run marked, then insert the result into the preview pane.
+            previewDiv.html(marked(
+                jNode.val().replace(/&/g, "&amp;") // use HTML entity for &
+                           .replace(/</g, "&lt;")  // use HTML entity for <
+                           .replace(/>/g, "&gt;")  // use HTML entity for >
+            ));
+        });
+
+        if(jNode.val().length > 0)
+            previewDiv.html(marked(
+                jNode.val().replace(/&/g, "&amp;") // use HTML entity for &
+                           .replace(/</g, "&lt;")  // use HTML entity for <
+                           .replace(/>/g, "&gt;")  // use HTML entity for >
+            ));
+
+        // reveal the hidden preview pane
+        textAreaParentForm.children().last().slideDown('fast');
+        
+        // remove the preview pane if the comment is submitted or editing is cancelled
+        var previewDivParent = previewDiv.parent();
+        jNode.on('keyup', function(event) {
+            if(event.which == 13 && jNode.val().length > 14) {  // comment was submitted via return key
+                previewDivParent.remove();
+            }
+        });
+        textAreaParentForm.find('[value="Add Comment"]').on('click', function() {
+            if(jNode.val().length > 14) {
+                previewDivParent.remove();
+            }
+        });
+        textAreaParentForm.find('[class="edit-comment-cancel"]').on('click', function() {
+            previewDivParent.remove();
+        });
+    }, 500)
+}
+
 // set the inline math delimiter (site-specific)
 var inlineDelimiter;
 if (window.location.pathname.indexOf('electronics.stackexchange') < 0 && window.location.pathname.indexOf('codereview.stackexchange') < 0)
@@ -393,7 +457,7 @@ if (window.location.pathname.indexOf('electronics.stackexchange') < 0 && window.
 else
     inlineDelimiter = '\\$';
 
-waitForKeyElements('[name="comment"]', addPreview);
+waitForKeyElements('[name="comment"]', typeof MathJax != 'undefined' ? addPreview : addPreviewWithoutJax);
 
 // When a new comment on a question/answer is being composed for the
 //  first time on a page the waitForKeyElements() listener above adds
@@ -409,7 +473,11 @@ waitForKeyElements('[name="comment"]', addPreview);
 var observer = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutationRecord) {
         if(mutationRecord.oldValue === 'display: none;') {
-            addPreview( $(mutationRecord.target).find('textarea') );
+            // check if the current page has MathJax and set the appropriate action
+            if(typeof MathJax != 'undefined')
+                addPreview( $(mutationRecord.target).find('textarea') );
+            else
+                addPreviewWithoutJax( $(mutationRecord.target).find('textarea') );
         }
     });
 });
