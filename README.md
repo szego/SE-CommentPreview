@@ -24,11 +24,9 @@ See [the source](MJPDEditing.js) for more info.
 
 #### Alternate version
 
-If the preview pane seems too flickery you might prefer...
+If the preview pane seems too flickery and you're tired of all the bugs then you might prefer the **[primary version of SE Comment Preview](../../)**.
 
-##### [SE Comment Preview - Marked!](../../tree/marked-for-markdown)
-
-The Marked! version uses [Marked](../../../../chjj/marked) to process Markdown instead of Pagedown and waits for you to stop typing before updating the preview.
+The primary version uses [Marked](../../../../chjj/marked) to process Markdown instead of Pagedown and waits for you to stop typing before updating the preview.
 
 #### Known issues
 - Causes other live previews on the page to stop rendering MathJax.
