@@ -1,23 +1,19 @@
-## SE Comment Preview - Marked! - v. M0.3.1
-An attempt to add real-time previewing when composing comments on Stack Exchange sites using the [Marked](../../../../chjj/marked) Markdown renderer.
+## SE Comment Preview v0.3.1
+An attempt to add real-time previewing when composing comments on Stack Exchange sites using the [marked](../../../../chjj/marked) Markdown renderer.
 
 This script creates a new live preview directly beneath any comment you compose or edit.
 
-All versions of the script in this branch start with the letter **M**, for **M**arked.
-
 #### Screenshot
 
-![screenshot](../../raw/marked-for-markdown/screenshot.png)
+![screenshot](../../raw/master/screenshot.png)
 
 #### Installation
 
-In Chrome, install the Tampermonkey extension then click **[here](../../raw/marked-for-markdown/comment-preview.user.js)**.
+In Chrome, install the Tampermonkey extension then click **[here](../../raw/master/comment-preview.user.js)**.
 
 #### About
 
-Compared to the [main version of SE Comment Preview](../../), this version offers delayed rendering for the preview. Some users might find this behavior more agreeable, but it won't feel like the other editors with live previews on Stack Exchange sites.
-
-Markdown is processed using [my fork](../../../../szego/marked/tree/disable-elements) of [Marked](../../../../chjj/marked). Math removal/replacement is handled using Stack Exchange's methods. These are coodinated with Marked using [Megh Parikh's implementation](../../../../meghprkh/markdown-mathjax).
+Markdown is processed using [my fork](../../../../szego/marked/tree/disable-elements) of [marked](../../../../chjj/marked). Math removal/replacement is handled using Stack Exchange's methods. These are coodinated with marked using [Megh Parikh's implementation](../../../../meghprkh/markdown-mathjax).
 
 See the source for more info.
 
@@ -30,3 +26,11 @@ See the source for more info.
 
 #### Wishlist
 - Figure out how to get it working in Firefox.
+
+#### Alternate version
+
+If you're curious (like me) you might be interested in...
+
+##### [SE Comment Preview - Paged!](../../tree/pagedown-for-markdown)
+
+The Paged! version uses Stack Exchange's version of Pagedown instead of marked to process Markdown. The previews in that version are much more responsive but break other things on the page.
