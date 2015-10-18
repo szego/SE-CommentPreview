@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SE Comment Preview
 // @namespace    https://github.com/szego/SE-CommentPreview/
-// @version      0.3.1
+// @version      0.3.2
 // @description  A userscript for Stack Exchange sites that adds a preview pane beneath comment input boxes
 // @match        *://*.stackexchange.com/*
 // @match        *://*.stackoverflow.com/*
@@ -366,14 +366,22 @@ function addPreview(jNode) {  // jNode is the comment entry text box
         textAreaParentForm.children().last().slideDown('fast');
         
         // remove the preview pane if the comment is submitted or editing is cancelled
+        var previewDivParent = previewDiv.parent();
         jNode.on('keyup', function(event) {
-            if(event.which == 13 && jNode.val().length > 14) previewDiv.parent().remove();  // comment was submitted via return key
+            if(event.which == 13 && jNode.val().length > 14) {  // comment was submitted via return key
+                previewDivParent.remove();
+                prev.Update = $.noop;
+            }
         });
         textAreaParentForm.find('[value="Add Comment"]').on('click', function() {
-            if(jNode.val().length > 14) previewDiv.parent().remove();
+            if(jNode.val().length > 14) {
+                previewDivParent.remove();
+                prev.Update = $.noop;
+            }
         });
         textAreaParentForm.find('[class="edit-comment-cancel"]').on('click', function() {
-            previewDiv.parent().remove();
+            previewDivParent.remove();
+            prev.Update = $.noop;
         });
     }, 500)
 }

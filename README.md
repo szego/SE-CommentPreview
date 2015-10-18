@@ -1,4 +1,4 @@
-## SE Comment Preview v0.3.1
+## SE Comment Preview v0.3.2
 An attempt to add real-time previewing when composing comments on Stack Exchange sites using the [marked](../../../../chjj/marked) Markdown renderer.
 
 This script creates a new live preview directly beneath any comment you compose or edit.
@@ -20,9 +20,9 @@ See the source for more info.
 #### Known issues
 - Does not work on Firefox.
 - The preview renders a wider variety of markdown than Stack Exchange allows in comments.
-    - Workaround: don't use Markdown in comments that isn't allowed.
+    - *Workaround:* Don't use Markdown in comments that isn't allowed.
 - Sometimes misses the last character or two when typing.
-    - Workaround: type another character and it should catch up.
+    - *Workaround:* Type another character and it should catch up.
 
 #### Wishlist
 - Figure out how to get it working in Firefox.
