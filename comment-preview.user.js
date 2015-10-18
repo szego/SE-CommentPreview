@@ -21,7 +21,7 @@
  * on the "second dynamic example" written by the MathJax team.
  * 
  * It has been modified to use jQuery and a custom fork of Marked. The
- * contents of processMarkdown are taken from Stack Exchange's current
+ * contents of processMarkdownAndTeX are taken from Stack Exchange's current
  * version of mathjax-editing.js.
  *
  * See: http://github.com/meghprkh/markdown-mathjax
@@ -53,7 +53,7 @@
                         'br' ]
 });
 
-function processMarkdown(text, delim) {
+function processMarkdownAndTeX(text, delim) {
     var ready = false; // true after initial typeset is complete
     var pending = false; // true when MathJax has been requested
     var preview = null; // the preview container
@@ -96,10 +96,9 @@ function processMarkdown(text, delim) {
     //    math, then push the math string onto the storage array.
     //
     function processMath(i, j, preProcess) {
-        var block = blocks.slice(i, j + 1).join("").replace(/&/g, "&amp;") // use HTML entity for &
-        .replace(/</g, "&lt;") // use HTML entity for <
-        .replace(/>/g, "&gt;") // use HTML entity for >
-        ;
+        var block = blocks.slice(i, j + 1).join("").replace(/&/g, "&amp;")  // use HTML entity for &
+                                                   .replace(/</g, "&lt;")   // use HTML entity for <
+                                                   .replace(/>/g, "&gt;");  // use HTML entity for >
         if (HUB.Browser.isMSIE) {
             block = block.replace(/(%[^\n]*)\n/g, "$1<br/>\n")
         }
@@ -304,7 +303,7 @@ Preview.prototype.CreatePreview = function () {
     var text = this.textarea.val();
     if (text === this.oldtext) return;
     this.oldtext = text;
-    text = processMarkdown(text, inlineDelimiter);
+    text = processMarkdownAndTeX(text, inlineDelimiter);
     this.preview.html(text);
     this.mjRunning = true;
     MathJax.Hub.Queue(
