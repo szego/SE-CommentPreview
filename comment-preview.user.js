@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         SE Comment Preview
-// @namespace    https://github.com/szego/SE-CommentPreview
-// @version      0.4.0
+// @name         SE Comment Preview - Paged!
+// @namespace    https://github.com/szego/SE-CommentPreview/tree/pagedown-for-markdown
+// @version      P.0.4.0
 // @description  A userscript for Stack Exchange sites that adds a preview pane beneath comment input boxes
 // @match        *://*.stackexchange.com/*
 // @match        *://*.stackoverflow.com/*
