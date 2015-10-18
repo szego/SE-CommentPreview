@@ -1,7 +1,7 @@
-# SE Comment Preview
-An attempt to add real-time previewing when composing comments on Stack Exchange sites.
+# SE Comment Preview - Marked! ver. M0.3
+An attempt to add real-time previewing when composing comments on Stack Exchange sites using the [Marked](../../../../chijj/marked) Markdown renderer.
 
-Markdown is processed using [my fork](../../../../szego/marked/tree/disable-elements) of [Marked](../../../../chijj/marked).
+All versions of the script in this branch start with the letter **M**, for **M**arked.
 
 #### Screenshot:
 
@@ -9,7 +9,15 @@ Markdown is processed using [my fork](../../../../szego/marked/tree/disable-elem
 
 #### Installation:
 
-In Chrome, install the Tampermonkey extension then click [here](../../raw/master/comment-preview.user.js).
+In Chrome, install the Tampermonkey extension then click **[here](../../raw/master/comment-preview.user.js)**.
+
+#### Notes on the implementation:
+
+Markdown is processed using [my fork](../../../../szego/marked/tree/disable-elements) of [Marked](../../../../chijj/marked).
+
+Math removal/replacement is handled using Stack Exchange's methods. These are coodinated with Marked using [Megh Parikh's implementation](../../../../meghprkh/markdown-mathjax).
+
+See the source for more info.
 
 #### Known issues:
 - Does not work on Firefox.
@@ -18,9 +26,8 @@ In Chrome, install the Tampermonkey extension then click [here](../../raw/master
 - Doesn't use MathJax preferences that have been set from the context menu.
 
 #### To do:
-- Change the Markdown renderer to Pagedown.
-    - This would allow more finely-tuned Markdown restrictions.
-- (tentative) Get it working on Firefox.
+- Implement some of the nice features from the [main branch](../master).
 
 #### Wishlist:
 - Figure out how to use the MathJax and/or Markdown renderer loaded by the Stack Exchange site.
+- Figure out how to get it working in Firefox.
