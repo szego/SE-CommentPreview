@@ -1,6 +1,5 @@
-## SE Comment Preview v0.4.0
-
-An attempt to add real-time previewing when composing comments on Stack Exchange sites.
+## SE Comment Preview v0.3.1
+An attempt to add real-time previewing when composing comments on Stack Exchange sites using the [marked](../../../../chjj/marked) Markdown renderer.
 
 This script creates a new live preview directly beneath any comment you compose or edit.
 
@@ -14,24 +13,24 @@ In Chrome, install the Tampermonkey extension then click **[here](../../raw/mast
 
 #### About
 
-This script should make editing a comment feel almost exactly like editing an answer.
+Markdown is processed using [my fork](../../../../szego/marked/tree/disable-elements) of [marked](../../../../chjj/marked). Math removal/replacement is handled using Stack Exchange's methods. These are coodinated with marked using [Megh Parikh's implementation](../../../../meghprkh/markdown-mathjax).
 
-Markdown is processed using Stack Exchange's version of Pagedown. Coordination of MathJax with Pagedown is based on Stack Exchange's implementation.
-
-See [the source](MJPDEditing.js) for more info.
-
-#### Alternate version
-
-If the preview pane seems too flickery you might prefer...
-
-##### [SE Comment Preview - Marked!](../../tree/marked-for-markdown)
-
-The Marked! version uses [Marked](../../../../chjj/marked) to process Markdown instead of Pagedown and waits for you to stop typing before updating the preview.
+See the source for more info.
 
 #### Known issues
 - Does not work on Firefox.
 - The preview renders a wider variety of markdown than Stack Exchange allows in comments.
     - Workaround: don't use Markdown in comments that isn't allowed.
+- Sometimes misses the last character or two when typing.
+    - Workaround: type another character and it should catch up.
 
 #### Wishlist
-- Figure out how to get this script working on Firefox.
+- Figure out how to get it working in Firefox.
+
+#### Alternate version
+
+If you're curious (like me) you might be interested in...
+
+##### [SE Comment Preview - Paged!](../../tree/pagedown-for-markdown)
+
+The Paged! version uses Stack Exchange's version of Pagedown instead of marked to process Markdown. The previews in that version are much more responsive but break other things on the page.
