@@ -1,8 +1,8 @@
-## SE Comment Preview v0.3.2
+## SE Comment Preview v0.4.0
 
 An attempt to add real-time previewing when composing comments on Stack Exchange sites.
 
-Markdown is processed using Pagedown, which has been slightly reorganized in [my fork](../../../../szego/pagedown) to work as a @require in Tampermonkey. Coordination of MathJax with Pagedown is based on [Davide Cervone's solution](http://stackoverflow.com/questions/11228558/let-pagedown-and-mathjax-work-together/21563171#comment17371250_11231030).
+This script creates a new live preview directly beneath any comment you compose or edit.
 
 #### Screenshot:
 
@@ -12,15 +12,26 @@ Markdown is processed using Pagedown, which has been slightly reorganized in [my
 
 In Chrome, install the Tampermonkey extension then click [here](../../raw/master/comment-preview.user.js).
 
+#### About
+
+This script should make editing a comment feel almost exactly like editing an answer.
+
+Markdown is processed using Stack Exchange's version of Pagedown. Coordination of MathJax with Pagedown is based on Stack Exchange's implementation.
+
+See [the source](MJPDEditing.js) for more info.
+
+#### Alternate version
+
+If the preview pane seems too flickery you might prefer...
+
+##### [SE Comment Preview - Marked!](../../tree/marked-for-markdown)
+
+The Marked! version uses [Marked](../../../../chjj/marked) to process Markdown instead of Pagedown and waits for you to stop typing before updating the preview.
+
 #### Known issues:
 - Does not work on Firefox.
-- Does not work on [Code Review SE](http://codereview.stackexchange.com/) or [Electrical Engineering SE](http://electronics.stackexchange.com/).
 - The preview renders a wider variety of markdown than Stack Exchange allows in comments.
     - Workaround: don't use Markdown in comments that isn't allowed.
 
-#### To do:
-- *(tentative)* Get it working on [Code Review SE](http://codereview.stackexchange.com/) and [Electrical Engineering SE](http://electronics.stackexchange.com/) if there is interest. The main problem is that they use different math delimiters, namely `\$` instead of `$` or `$$`.
-
 #### Wishlist:
-- Figure out how to use the MathJax and/or Markdown renderer loaded by the Stack Exchange site.
 - Figure out how to get this script working on Firefox.
