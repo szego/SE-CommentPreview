@@ -10,7 +10,7 @@ This script creates a new live preview directly beneath any comment you compose 
 
 #### Installation
 
-In Chrome, install the Tampermonkey extension then click [here](../../raw/master/comment-preview.user.js).
+In Chrome, install the Tampermonkey extension then click **[here](../../raw/master/comment-preview.user.js)**.
 
 #### About
 
