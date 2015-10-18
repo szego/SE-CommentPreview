@@ -4,11 +4,11 @@ An attempt to add real-time previewing when composing comments on Stack Exchange
 
 This script creates a new live preview directly beneath any comment you compose or edit.
 
-#### Screenshot:
+#### Screenshot
 
 ![screenshot](../../raw/master/screenshot.png)
 
-#### Installation:
+#### Installation
 
 In Chrome, install the Tampermonkey extension then click [here](../../raw/master/comment-preview.user.js).
 
@@ -28,10 +28,10 @@ If the preview pane seems too flickery you might prefer...
 
 The Marked! version uses [Marked](../../../../chjj/marked) to process Markdown instead of Pagedown and waits for you to stop typing before updating the preview.
 
-#### Known issues:
+#### Known issues
 - Does not work on Firefox.
 - The preview renders a wider variety of markdown than Stack Exchange allows in comments.
     - Workaround: don't use Markdown in comments that isn't allowed.
 
-#### Wishlist:
+#### Wishlist
 - Figure out how to get this script working on Firefox.
