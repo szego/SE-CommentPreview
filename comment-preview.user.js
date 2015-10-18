@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SE Comment Preview - Marked!
 // @namespace    https://github.com/szego/SE-CommentPreview/tree/marked-for-markdown
-// @version      M0.3
+// @version      M0.3.1
 // @description  A userscript for Stack Exchange sites that adds a preview pane beneath comment input boxes
 // @match        *://*.stackexchange.com/*
 // @match        *://*.stackoverflow.com/*
@@ -10,9 +10,8 @@
 // @match        *://*.askubuntu.com/*
 // @match        *://*.stackapps.com/*
 // @match        *://*.mathoverflow.net/*
-// @require      https://rawgit.com/szego/marked/disable-elements/lib/marked.js
+// @require      https://szego.github.io/marked/lib/marked.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
-// @grant        GM_addStyle
 // ==/UserScript==
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -330,11 +329,11 @@ Preview.prototype.PreviewDone = function () {
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-function addPreview(jNode) {  //jNode is the comment entry text box
+function addPreview(jNode) {  // jNode is the comment entry text box
     var textAreaParentForm = jNode.parent().parent().parent().parent().parent();
     var commentidNum = textAreaParentForm.parent().parent()[0].id.replace( /^\D+/g, '');  // SE id number of comment being edited,
                                                                                           //  blank if adding new comment
-    if (commentidNum.length == 0) {  //a new comment is being added
+    if (commentidNum.length == 0) {  // a new comment is being added
         commentidNum = textAreaParentForm[0].id.replace( /^\D+/g, '');  // SE id number of question/answer being commented on
     }
     
@@ -353,16 +352,15 @@ function addPreview(jNode) {  //jNode is the comment entry text box
 
         var previewDiv = $('#' + newdivid);
         var prev = new Preview(jNode, previewDiv);
-        prev.callback = MathJax.Callback(["CreatePreview",prev]);
+        prev.callback = MathJax.Callback(["CreatePreview", prev]);
         prev.callback.autoReset = true;  // make sure it can run more than once
         
         jNode.on('input propertychange', function() {
             prev.Update();
         });
 
-        if(jNode.val().length > 0) {
+        if(jNode.val().length > 0)
             prev.Update();
-        }
 
         // reveal the hidden preview pane
         textAreaParentForm.children().last().slideDown('fast');
