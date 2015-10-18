@@ -37,11 +37,11 @@ function addPreview(jNode) {  // jNode is the comment entry text box
         var postfix = options.postfix;
 
         // elements in the preview pane are given unique IDs that will be recognized by Pagedown
-        var previewPane = '<div style="display: none;">                                                                                           \
-                               <hr style="margin-bottom:16px;margin-top:10px;background-color:#ccc;border-bottom:1px dotted #fefefe;height:0px">  \
-                               <div id="wmd-button-bar' + postfix + '" style="display: none;"></div>                                \
-                               <div id="wmd-preview' + postfix + '" class"wmd-panel wmd-preview"></div>                             \
-                               <hr style="margin-top:17px;background-color:#ccc;border-bottom:1px dotted #fefefe;height:0px">                     \
+        var previewPane = '<div style="display: none;">                                                                                                 \
+                               <hr style="margin-bottom:16px;margin-top:10px;background-color:rgba(0,0,0,0);border-bottom:1px dotted #ccc;height:0px">  \
+                               <div id="wmd-button-bar' + postfix + '" style="display: none;"></div>                                                    \
+                               <div id="wmd-preview' + postfix + '" class"wmd-panel wmd-preview"></div>                                                 \
+                               <hr style="margin-top:17px;background-color:rgba(0,0,0,0);border-bottom:1px dotted #ccc;height:0px">                     \
                            </div>';
 
         // insert the preview pane into the page
