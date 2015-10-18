@@ -1,5 +1,5 @@
 # SE Comment Preview - Marked! ver. M0.3
-An attempt to add real-time previewing when composing comments on Stack Exchange sites using the [Marked](../../../../chijj/marked) Markdown renderer.
+An attempt to add real-time previewing when composing comments on Stack Exchange sites using the [Marked](../../../../chjj/marked) Markdown renderer.
 
 All versions of the script in this branch start with the letter **M**, for **M**arked.
 
@@ -13,7 +13,7 @@ In Chrome, install the Tampermonkey extension then click **[here](../../raw/mast
 
 #### Notes on the implementation:
 
-Markdown is processed using [my fork](../../../../szego/marked/tree/disable-elements) of [Marked](../../../../chijj/marked).
+Markdown is processed using [my fork](../../../../szego/marked/tree/disable-elements) of [Marked](../../../../chjj/marked).
 
 Math removal/replacement is handled using Stack Exchange's methods. These are coodinated with Marked using [Megh Parikh's implementation](../../../../meghprkh/markdown-mathjax).
 
