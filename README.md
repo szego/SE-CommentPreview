@@ -1,4 +1,4 @@
-## SE Comment Preview v0.3.2
+## SE Comment Preview v0.3.3
 An attempt to add real-time previewing when composing comments on Stack Exchange sites using the [marked](../../../../chjj/marked) Markdown renderer.
 
 This script creates a new live preview directly beneath any comment you compose or edit.

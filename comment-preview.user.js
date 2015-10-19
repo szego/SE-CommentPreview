@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SE Comment Preview
 // @namespace    https://github.com/szego/SE-CommentPreview/
-// @version      0.3.2
+// @version      0.3.3
 // @description  A userscript for Stack Exchange sites that adds a preview pane beneath comment input boxes
 // @match        *://*.stackexchange.com/*
 // @match        *://*.stackoverflow.com/*
@@ -21,7 +21,7 @@
  * on the "second dynamic example" written by the MathJax team.
  * 
  * It has been modified to use jQuery and a custom fork of Marked. The
- * contents of processMarkdown are taken from Stack Exchange's current
+ * contents of processMarkdownAndTeX are taken from Stack Exchange's current
  * version of mathjax-editing.js.
  *
  * See: http://github.com/meghprkh/markdown-mathjax
@@ -53,7 +53,7 @@
                         'br' ]
 });
 
-function processMarkdown(text, delim) {
+function processMarkdownAndTeX(text, delim) {
     var ready = false; // true after initial typeset is complete
     var pending = false; // true when MathJax has been requested
     var preview = null; // the preview container
@@ -96,10 +96,9 @@ function processMarkdown(text, delim) {
     //    math, then push the math string onto the storage array.
     //
     function processMath(i, j, preProcess) {
-        var block = blocks.slice(i, j + 1).join("").replace(/&/g, "&amp;") // use HTML entity for &
-        .replace(/</g, "&lt;") // use HTML entity for <
-        .replace(/>/g, "&gt;") // use HTML entity for >
-        ;
+        var block = blocks.slice(i, j + 1).join("").replace(/&/g, "&amp;")  // use HTML entity for &
+                                                   .replace(/</g, "&lt;")   // use HTML entity for <
+                                                   .replace(/>/g, "&gt;");  // use HTML entity for >
         if (HUB.Browser.isMSIE) {
             block = block.replace(/(%[^\n]*)\n/g, "$1<br/>\n")
         }
@@ -247,28 +246,31 @@ function processMarkdown(text, delim) {
         return text;
     }
 
-    text = removeMath(text); 
-    //remove and replace text with @@0@@ so that markdown does not do anything to math
-    text = marked(text);      //set marked to run
-    text = replaceMath(text); //rereplace math
+    // Remove math then neuter HTML tags since they do nothing in Stack Exchange
+    //  comments anyway, run marked, then put the math back into the text.
+    text = removeMath(text).replace(/&/g, "&amp;")  // use HTML entity for &
+                           .replace(/</g, "&lt;")   // use HTML entity for <
+                           .replace(/>/g, "&gt;");  // use HTML entity for >;
+    text = marked(text);
+    text = replaceMath(text);
     return text; 
 }
 
 /**
  * Preview object, to be associated with each textarea + preview div.
  *
- * @param {jQuery} inputBox   - A jQuery object pointing to the
- *                               textarea element from which to create
- *                               the live preview.
- * @param {jQuery} previewBox - A jQuery object pointing to the div
- *                               element which will contain the live
- *                               preview.
+ * @param {jQuery} input  - A jQuery object pointing to the
+ *                           textarea element from which to create
+ *                           the live preview.
+ * @param {jQuery} output - A jQuery object pointing to the div
+ *                           element which will contain the live
+ *                           preview.
  */
-function Preview(inputBox, previewBox) {
+function Preview(input, output) {
     this.delay = 300;         // delay after keystroke before updating
 
-    this.preview = previewBox;
-    this.textarea = inputBox;
+    this.textarea = input;
+    this.preview = output;
 
     this.timeout = null;     // store setTimout id
     this.mjRunning = false;  // true when MathJax is processing
@@ -301,7 +303,7 @@ Preview.prototype.CreatePreview = function () {
     var text = this.textarea.val();
     if (text === this.oldtext) return;
     this.oldtext = text;
-    text = processMarkdown(text, inlineDelimiter);
+    text = processMarkdownAndTeX(text, inlineDelimiter);
     this.preview.html(text);
     this.mjRunning = true;
     MathJax.Hub.Queue(
@@ -318,6 +320,31 @@ Preview.prototype.CreatePreview = function () {
 //
 Preview.prototype.PreviewDone = function () {
     this.mjRunning = false;
+};
+
+/**
+ * PreviewWithoutJax object, to be associated with each textarea + preview div.
+ *
+ * @param {jQuery} input  - A jQuery object pointing to the
+ *                           textarea element from which to create
+ *                           the live preview.
+ * @param {jQuery} output - A jQuery object pointing to the div
+ *                           element which will contain the live
+ *                           preview.
+ */
+function PreviewWithoutJax(input, output) {
+    this.textarea = input;
+    this.preview = output;
+}
+
+PreviewWithoutJax.prototype.Update = function () {
+    // Remove math then neuter HTML tags since they do nothing in Stack Exchange
+    //  comments anyway, run marked, then insert the result into the preview pane.
+    this.preview.html(marked(
+        this.textarea.val().replace(/&/g, "&amp;") // use HTML entity for &
+                           .replace(/</g, "&lt;")  // use HTML entity for <
+                           .replace(/>/g, "&gt;")  // use HTML entity for >
+    ));
 };
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -350,10 +377,17 @@ function addPreview(jNode) {  // jNode is the comment entry text box
 
         textAreaParentForm.children().last().after(previewPane);
 
+        // check if the current page has MathJax and instantiate the
+        //  appropriate kind of Preview object
         var previewDiv = $('#' + newdivid);
-        var prev = new Preview(jNode, previewDiv);
-        prev.callback = MathJax.Callback(["CreatePreview", prev]);
-        prev.callback.autoReset = true;  // make sure it can run more than once
+        var prev;
+        if(typeof MathJax != 'undefined') {
+            prev = new Preview(jNode, previewDiv);
+            prev.callback = MathJax.Callback(["CreatePreview", prev]);
+            prev.callback.autoReset = true;  // make sure it can run more than once
+        } else {
+            prev = new PreviewWithoutJax(jNode, previewDiv);
+        }
         
         jNode.on('input propertychange', function() {
             prev.Update();
